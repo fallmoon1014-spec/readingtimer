@@ -98,6 +98,7 @@ function App() {
   const handleResetAllTimers = () => {
     if (window.confirm('모든 번호의 오늘 독서 시간을 기록장에 저장하고 0초로 초기화하시겠습니까?')) {
       const today = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+      let savedCount = 0;
       
       setStudents(prev => prev.map(student => {
         // Only save log if they read something today
@@ -108,6 +109,7 @@ function App() {
           
           if (finalTime > 0) {
             updatedLogs.push({ date: today, time: finalTime });
+            savedCount++;
           }
         }
         
@@ -119,6 +121,15 @@ function App() {
           logs: updatedLogs,
         };
       }));
+
+      // Give visual feedback after a short delay so state updates
+      setTimeout(() => {
+        if (savedCount > 0) {
+          alert(`총 ${savedCount}명의 독서 기록이 성공적으로 기록장에 저장되고 리셋되었습니다!`);
+        } else {
+          alert('저장할 독서 기록(1초 이상)이 없어서 타이머만 0으로 초기화되었습니다.');
+        }
+      }, 100);
     }
   };
 
