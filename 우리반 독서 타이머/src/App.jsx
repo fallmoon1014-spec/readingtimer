@@ -11,11 +11,18 @@ function App() {
       try {
         const parsed = JSON.parse(saved);
         if (parsed.length > 0) {
-          // 개인정보 보호 강제 조치: 이름에 숫자가 아닌 진짜 이름(문자열)이 섞여있으면 강제 리셋
           const hasRealNames = parsed.some(s => !/^\d+번$/.test(s.name));
           if (hasRealNames) {
             console.warn("Privacy check failed: found real names. Resetting to numbers.");
-            throw new Error("Privacy check failed");
+            // 강제로 1~25번 생성하여 반환 (에러를 던지지 않음)
+            return Array.from({ length: 25 }, (_, i) => ({
+              id: crypto.randomUUID(),
+              name: `${i + 1}번`,
+              totalTime: 0,
+              isRunning: false,
+              lastStartTime: null,
+              logs: [],
+            }));
           }
 
           return parsed.map(s => ({
